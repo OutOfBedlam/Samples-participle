@@ -28,11 +28,7 @@ func (b *BoolValue) Capture(values []string) error {
 }
 
 func TestField(t *testing.T) {
-	parser, err := participle.Build[Statement]()
-	if err != nil {
-		panic(err)
-	}
-	require.NotNil(t, parser)
+	parser := participle.MustBuild[Statement]()
 	ast, err := parser.ParseString("", "size=10")
 	if err != nil {
 		panic(err)
@@ -48,12 +44,9 @@ type Block struct {
 }
 
 func TestBlock(t *testing.T) {
-	parser, err := participle.Build[Block](participle.Unquote("String"))
-	if err != nil {
-		panic(err)
-	}
+	parser := participle.MustBuild[Block](participle.Unquote("String"))
 	ast, err := parser.ParseString("", `
-		define  block1 {
+		define  block_1 {
 			size   = 10
 			length = 20
 			flag   = true
@@ -63,7 +56,7 @@ func TestBlock(t *testing.T) {
 
 	bTrue := BoolValue(true)
 	expect := &Block{
-		Identifier: "block1",
+		Identifier: "block_1",
 		Statements: []Statement{
 			{Key: "size", Value: Value{Int: 10}},
 			{Key: "length", Value: Value{Int: 20}},
