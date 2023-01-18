@@ -39,14 +39,14 @@ func TestField(t *testing.T) {
 }
 
 type Block struct {
-	Identifier string      `parser:"'define' @Ident"`
+	Identifier []string    `parser:"'define' @Ident @(Ident)*"`
 	Statements []Statement `parser:"'{' @@* '}'"`
 }
 
 func TestBlock(t *testing.T) {
 	parser := participle.MustBuild[Block](participle.Unquote("String"))
 	ast, err := parser.ParseString("", `
-		define  block_1 {
+		define  block_1  param_a {
 			size   = 10
 			length = 20
 			flag   = true
@@ -56,7 +56,7 @@ func TestBlock(t *testing.T) {
 
 	bTrue := BoolValue(true)
 	expect := &Block{
-		Identifier: "block_1",
+		Identifier: []string{"block_1", "param_a"},
 		Statements: []Statement{
 			{Key: "size", Value: Value{Int: 10}},
 			{Key: "length", Value: Value{Int: 20}},
